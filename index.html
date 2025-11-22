@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Yummaland — Playground </title>
+
+<!-- Fonts & icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root{
+    --bg-900: #120017;
+    --text-1:#fff0f7;
+    --muted:#e3b9d2;
+    --pink-main:#ff3ea5;
+    --pink-light:#ff7dcf;
+    --pink-bg:rgba(255,62,165,0.12);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    height:100%;
+    background:radial-gradient(circle at top,#1a001d,#090008);
+    color:var(--text-1);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    scroll-behavior:smooth;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%;height:auto}
+
+  #stage{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+
+  .page{
+    position:relative;z-index:2;min-height:100vh;
+    display:flex;flex-direction:column;gap:36px;
+    padding:28px;
+  }
+
+  /* HEADER Pink Frost */
+  header{
+    position:fixed;left:16px;right:16px;top:12px;z-index:30;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 16px;border-radius:18px;
+    background:rgba(255,62,165,0.18);
+    backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.15);
+    box-shadow:0 6px 30px rgba(255,62,165,0.2);
+  }
+
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo .mark{
+    width:46px;height:46px;border-radius:50%;overflow:hidden;
+    box-shadow:0 0 25px rgba(255,62,165,0.6);
+  }
+  .logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .logo span{font-weight:700;letter-spacing:0.6px;color:var(--text-1);font-size:18px;text-shadow:0 0 10px rgba(255,62,165,0.4)}
+
+  nav{display:flex;gap:10px;align-items:center}
+  nav a{padding:10px 12px;border-radius:10px;font-weight:600;color:var(--muted);transition:all .18s}
+  nav a:hover{color:var(--pink-light);text-shadow:0 0 12px var(--pink-main)}
+  .menu-btn{display:none;font-size:22px;color:var(--pink-light);cursor:pointer}
+
+  @media(max-width:900px){
+    nav{display:none}
+    .menu-btn{display:block}
+  }
+
+  /* HERO */
+  .hero{
+    margin-top:90px;
+    display:flex;align-items:center;justify-content:center;gap:28px;
+    padding:36px;border-radius:18px;
+    background:rgba(255,62,165,0.15);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 12px 50px rgba(255,62,165,0.2);
+    flex-wrap:wrap;
+  }
+  .hero-left{flex:1;min-width:280px;padding:12px}
+  .kicker{
+    display:inline-flex;gap:8px;align-items:center;padding:6px 10px;
+    border-radius:999px;background:rgba(255,255,255,0.2);
+    color:var(--pink-light);font-weight:700;font-size:12px;
+  }
+  h1{
+    font-family:Fredoka One, Inter; font-size:42px;
+    background:linear-gradient(90deg,var(--pink-main),#b84eff);
+    -webkit-background-clip:text;color:transparent;
+    margin:18px 0 10px;
+  }
+  .lead{color:var(--muted);font-size:16px;line-height:1.45;max-width:620px}
+  .ctas{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+  .btn-neo{
+    border-radius:999px;padding:12px 20px;font-weight:800;
+    border:1px solid rgba(255,255,255,0.25);cursor:pointer;
+    background:rgba(255,62,165,0.15);color:white;
+    backdrop-filter:blur(10px);
+  }
+  .btn-neo.primary{
+    background:linear-gradient(90deg,rgba(255,20,147,0.25),rgba(123,59,255,0.25));
+    box-shadow:0 12px 40px rgba(255,20,147,0.25);
+  }
+  .btn-neo:hover{transform:translateY(-3px);box-shadow:0 15px 50px rgba(255,62,165,0.3)}
+
+  /* CARD Frost */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1}
+  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    border-radius:16px;padding:18px;
+    background:rgba(255,62,165,0.12);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.15);
+    box-shadow:0 10px 40px rgba(255,62,165,0.2);
+    transition:transform .3s;
+  }
+  .card:hover{transform:translateY(-6px)}
+  .card .icon{
+    width:64px;height:64px;border-radius:12px;display:grid;place-items:center;margin-bottom:10px;
+    background:rgba(255,62,165,0.25);color:white;font-size:28px;
+  }
+  .card h3{font-size:18px;margin-bottom:6px;color:var(--text-1)}
+  .card p{color:var(--muted);font-size:14px;line-height:1.45}
+
+  /* FORM & FOOTER */
+  form.card, footer{
+    background:rgba(255,62,165,0.12);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.15);
+    box-shadow:0 10px 40px rgba(255,62,165,0.18);
+  }
+  footer{
+    margin-top:28px;padding:28px;border-radius:14px;text-align:center;
+  }
+
+  footer .social {
+    display:flex;justify-content:center;align-items:center;gap:16px;margin-top:10px;
+  }
+  footer .social a {
+    color: var(--pink-light);
+    font-size: 22px;
+    transition: all 0.25s ease;
+  }
+  footer .social a:hover {
+    color: white;
+    text-shadow: 0 0 16px var(--pink-main), 0 0 30px var(--pink-light);
+    transform: translateY(-3px);
+  }
+
+  @media(max-width:600px){
+    .page{padding:16px}
+    h1{font-size:30px}
+    .lead{font-size:14px}
+    .btn-neo{padding:10px 16px;font-size:14px}
+    .card{padding:14px}
+    .logo span{font-size:16px}
+  }
+
+  /* ===== FIX GALERI YUMMALAND ===== */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+  justify-items: center;
+}
+
+.frame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 6px;
+  background: rgba(255,62,165,0.15);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 4px 24px rgba(255,62,165,0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.frame:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 40px rgba(255,62,165,0.25);
+}
+
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+.contact-map {
+  text-align: center;
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255,62,165,0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(255,62,165,0.15);
+}
+
+.contact-map {
+  text-align: center;
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255,62,165,0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(255,62,165,0.15);
+}
+
+.contact-map h3 {
+  color: var(--pink-light);
+  font-size: 18px;
+  margin-bottom: 14px;
+  text-shadow: 0 0 10px rgba(255,62,165,0.5);
+}
+
+.map-frame {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(255,62,165,0.2);
+  transition: transform 0.3s ease;
+}
+
+.map-frame:hover {
+  transform: scale(1.02);
+}
+
+.contact-map .alamat {
+  color: var(--muted);
+  margin: 14px 0;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.contact-map .btn-neo {
+  margin-top: 10px;
+  display: inline-block;
+  font-size: 15px;
+}
+
+</style>
+
+
+</head>
+<body>
+
+<!-- canvas stage for aurora/particles -->
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div class="page" id="app">
+
+  <!-- header -->
+  <header id="topbar">
+    <div class="logo">
+      <div class="mark" style="width:46px;height:46px;border-radius:50%;overflow:hidden;box-shadow:0 8px 36px rgba(255,20,147,0.25);">
+     <img src="img/yumma.png" alt="Foto Saya" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <span>Yummaland</span>
+    </div>
+
+    <nav id="nav">
+      <a href="#tentang">Tentang</a>
+      <a href="#fasilitas">Fasilitas</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#harga">Harga</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+
+    <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+  </header>
+
+  <!-- hero / showcase -->
+  <section class="hero reveal" id="home" aria-label="Hero">
+    <div class="hero-left">
+      <div class="kicker">Yummaland</div>
+      <h1>Selamat Datang di Yummaland </h1>
+      <p class="lead">Yummaland hadir untuk memberikan ruang bermain kreatif bagi anak-anak dengan fasilitas aman, staf ramah, dan program edukasi menyenangkan.</p>
+    </div>
+
+    <!-- right: info grid -->
+    <div class="grid" aria-hidden="true" style="max-width:680px">
+      <div class="card">
+        <div class="icon"><i class="fa-solid fa-child"></i></div>
+        <h3>Area Bermain Interaktif</h3>
+        <p>Soft-floor, sensor motion play, dan zona edukasi untuk 1-12 tahun.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><i class="fa-solid fa-birthday-cake"></i></div>
+        <h3>Paket Ulang Tahun</h3>
+        <p>Decor futuristik, photobooth neon, dan paket snack sehat.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><i class="fa-solid fa-coffee"></i></div>
+        <h3>Kafe Orang Tua</h3>
+        <p>Area nyaman dengan live-monitor ke playground & free Wi-Fi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tentang -->
+  <section id="tentang" class="reveal">
+    <div style="max-width:1080px;margin:0 auto">
+      <h2>Tentang Kami</h2>
+      <p class="muted">Yummaland adalah tempat bermain anak yang aman, menyenangkan, dan edukatif. Kami dirancang untuk menjadi destinasi favorit keluarga, di mana anak-anak bisa bermain, belajar, dan mengeksplorasi kreativitas mereka dalam lingkungan yang aman dan nyaman.</p>
+    </div>
+  </section>
+
+  <!-- fasilitas -->
+  <section id="fasilitas" class="reveal">
+    <div style="max-width:1080px;margin:0 auto">
+      <h2>Fasilitas</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px">
+        <div class="card"><div class="icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Keamanan 24/7</h3><p class="muted">Staf terlatih & CCTV.</p></div>
+        <div class="card"><div class="icon"><i class="fa-solid fa-wifi"></i></div><h3>Wi-Fi & Charging</h3><p class="muted">Koneksi cepat di seluruh area.</p></div>
+        <div class="card"><div class="icon"><i class="fa-solid fa-music"></i></div><h3>Musik anak anak</h3><p class="muted">Stimulus suara & cahaya terkontrol.</p></div>
+        <div class="card"><div class="icon"><i class="fa-solid fa-camera"></i></div><h3>Spot foto anak keren</h3><p class="muted">Background keren untuk social post.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- galeri -->
+  <section id="galeri" class="reveal">
+    <div style="max-width:1080px;margin:0 auto">
+      <h2>Galeri</h2>
+      <div class="gallery" id="gallery">
+        <div class="frame"><img src="img/foto2.jpg" alt="Foto 2"></div>
+        <div class="frame"><img src="img/foto3.jpg" alt="Foto 3"></div>
+        <div class="frame"><img src="img/foto4.jpg" alt="Foto 4"></div>
+        <div class="frame"><img src="img/foto5.jpg" alt="Foto 5"></div>
+        <div class="frame"><img src="img/foto6.jpg" alt="Foto 6"></div>
+        <div class="frame"><img src="img/foto7.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto8.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto9.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto10.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto12.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto13.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto14.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto15.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto16.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto17.jpg" alt=""></div>
+        <div class="frame"><img src="img/foto18.jpg" alt=""></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- harga -->
+  <section id="harga" class="reveal">
+    <div style="max-width:1080px;margin:0 auto">
+      <h2>Harga & Paket</h2>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+        <div style="flex:1;min-width:200px" class="card"><h3>Paket Harian</h3><p class="muted">Rp 35.000 / anak</p></div>
+        <div style="flex:1;min-width:200px" class="card"><h3>Paket Kelompok </h3><p class="muted">Rp 500.000 / Rombongan</p></div>
+        <div style="flex:1;min-width:200px" class="card"><h3>Paket Ulang Tahun</h3><p class="muted">Mulai Rp 2.000.000</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- testimoni -->
+  <section id="testimoni" class="reveal">
+    <div style="max-width:1080px;margin:0 auto">
+      <h2>Testimoni</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px">
+        <div class="card"><img src="img/mom.jpg" alt="" style="width:52px;height:52px;border-radius:999px;float:left;margin-right:10px"><strong>Ibu Susan</strong><p class="muted">"Anak saya betah! Staf ramah."</p></div>
+        <div class="card"><img src="img/dad.jpg" alt="" style="width:52px;height:52px;border-radius:999px;float:left;margin-right:10px"><strong>Bapak Dimas</strong><p class="muted">"Rekomendasi, fasilitas lengkap."</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- kontak -->
+ <section id="kontak" class="reveal">
+  <div style="max-width:720px;margin:0 auto">
+    <h2>Hubungi Kami</h2>
+    <form id="waForm" class="card" style="display:flex;flex-direction:column;gap:10px">
+      <input id="custName" placeholder="Nama Anda" required
+        style="padding:10px;border-radius:8px;background:transparent;
+               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)">
+      <input id="playDate" type="date" required
+        style="padding:10px;border-radius:8px;background:transparent;
+               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)">
+      <textarea id="note" rows="3" placeholder="Catatan tambahan"
+        style="padding:10px;border-radius:8px;background:transparent;
+               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)"></textarea>
+
+      <button class="btn-neo primary" type="submit">Kirim ke WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<!-- 🌸 LOKASI 1 -->
+<div class="contact-map">
+  <h3>📍 Yummaland PGK – Pangkal Pinang</h3>
+  <div class="map-frame">
+    <iframe 
+      src="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung&output=embed"
+      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <p class="alamat">
+    Yummaland PGK<br>
+    Jl. Pahlawan 12, Kacang Pedang, Kec. Gerunggang,<br>
+    Kota Pangkal Pinang, Kepulauan Bangka Belitung
+  </p>
+  <a href="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung" 
+     target="_blank" class="btn-neo">Lihat di Google Maps</a>
+</div>
+
+<!-- 🌸 LOKASI 2 -->
+<div class="contact-map">
+  <h3>📍 Yummaland Muntok – Bangka Barat</h3>
+  <div class="map-frame">
+    <iframe 
+      src="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351&output=embed"
+      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <p class="alamat">
+    Yummaland Muntok<br>
+    W5J7+P5H, Jl. Jenderal Sudirman, Tanjung,<br>
+    Kec. Muntok, Kabupaten Bangka Barat, Kepulauan Bangka Belitung 33351
+  </p>
+  <a href="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351" 
+     target="_blank" class="btn-neo">Lihat di Google Maps</a>
+</div>
+
+<!-- 🌸 LOKASI 3 -->
+<div class="contact-map">
+  <h3>📍 Yummaland Sungailiat – Bangka</h3>
+  <div class="map-frame">
+    <iframe 
+      src="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung&output=embed"
+      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <p class="alamat">
+    Yummaland Sungailiat<br>
+    44W8+R43, Jl. Cokro Aminoto, Sungailiat,<br>
+    Kabupaten Bangka, Kepulauan Bangka Belitung
+  </p>
+  <a href="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung" 
+     target="_blank" class="btn-neo">Lihat di Google Maps</a>
+</div>
+
+
+  <footer>
+     <div class="meta">
+    <div class="muted">© <span id="year"></span> Yummaland </div>
+    <div class="social">
+      <a href="https://instagram.com/yummaland" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://facebook.com/yummaland" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+      <a href="https://tiktok.com/@yummaland" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    </div>
+  </div>
+  </footer>
+
+</div>
+
+<!-- lightbox -->
+<div id="lightbox" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s">
+  <img id="lightboxImg" src="" alt="" style="max-width:92%;max-height:86%;border-radius:10px;box-shadow:0 30px 100px rgba(0,0,0,0.8)">
+</div>
+
+<script>
+/* -------------------------
+   Helpers & small utilities
+   ------------------------- */
+const $ = (s,root=document) => root.querySelector(s);
+const $$ = (s,root=document) => Array.from(root.querySelectorAll(s));
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* -------------------------
+   Menu toggle (mobile)
+   ------------------------- */
+const menuBtn = $('#menuBtn'), nav = $('#nav');
+menuBtn?.addEventListener('click', ()=> nav.classList.toggle('active'));
+
+/* -------------------------
+   Reveal on scroll
+   ------------------------- */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold: 0.12});
+$$('.reveal').forEach(el => observer.observe(el));
+
+/* -------------------------
+   Buttons ripple micro-interaction
+   ------------------------- */
+function rippleEffect(e){
+  const btn = e.currentTarget;
+  let ripple = btn.querySelector('.ripple');
+  if(!ripple){
+    ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.position='absolute';
+    ripple.style.borderRadius='999px';
+    ripple.style.pointerEvents='none';
+    ripple.style.background = 'rgba(255,255,255,0.06)';
+    btn.appendChild(ripple);
+  }
+  ripple.style.width = ripple.style.height = Math.max(btn.offsetWidth, btn.offsetHeight)*2 + 'px';
+  const rect = btn.getBoundingClientRect();
+  ripple.style.left = (e.clientX - rect.left) + 'px';
+  ripple.style.top = (e.clientY - rect.top) + 'px';
+  ripple.style.transform = 'translate(-50%,-50%) scale(0)';
+  ripple.style.opacity = '0.9';
+  ripple.animate([
+    {transform:'translate(-50%,-50%) scale(0)', opacity:0.9},
+    {transform:'translate(-50%,-50%) scale(1)', opacity:0}
+  ],{duration:520,easing:'cubic-bezier(.2,.9,.2,1)'});
+}
+$$('.btn-neo').forEach(b=>{
+  b.addEventListener('pointerdown', rippleEffect);
+});
+
+document.getElementById("waForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("custName").value.trim();
+  const date = document.getElementById("playDate").value.trim();
+  const note = document.getElementById("note").value.trim();
+
+  // Nomor WA tujuan
+  const phone = "6289526740388";
+
+  // Format pesan
+  const message =
+    `Halo, saya *${name}* ingin bermain di tanggal *${date}*.%0A%0A` +
+    `Catatan:%0A${note || '-'}`;
+
+  // Buat URL WhatsApp
+  const waURL = `https://wa.me/${phone}?text=${message}`;
+
+  // Buka di tab baru
+  window.open(waURL, "_blank");
+});
+
+
+
+/* -------------------------
+   Gallery lightbox
+   ------------------------- */
+$('#gallery')?.addEventListener('click', (ev)=>{
+  const img = ev.target.closest('img');
+  if(!img) return;
+  $('#lightboxImg').src = img.src;
+  const lb = $('#lightbox');
+  lb.style.pointerEvents='auto';
+  lb.style.opacity=1;
+});
+$('#lightbox')?.addEventListener('click', ()=>{ $('#lightbox').style.opacity=0; setTimeout(()=>$('#lightbox').style.pointerEvents='none',220); });
+
+/* -------------------------
+   Canvas: aurora + particles (futuristic)
+   - lightweight, no libs
+   ------------------------- */
+(function(){
+  const canvas = document.getElementById('stage');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w=0,h=0,device=window.devicePixelRatio || 1;
+  const particles = [];
+  const lines = [];
+
+  function resize(){
+    device = window.devicePixelRatio || 1;
+    w = canvas.width = Math.floor(window.innerWidth * device);
+    h = canvas.height = Math.floor(window.innerHeight * device);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(device,0,0,device,0,0);
+  }
+  window.addEventListener('resize', () => { resize(); initScene(); });
+
+  // particle constructor
+  function P(x,y,r,dx,dy,life, hue){
+    this.x=x;this.y=y;this.r=r;this.dx=dx;this.dy=dy;this.life=life;this.max=life;this.h=hue;
+  }
+  P.prototype.step = function(dt){
+    this.x += this.dx*dt;
+    this.y += this.dy*dt;
+    this.life -= dt*0.6;
+    if(this.life <= 0) return false;
+    return true;
+  }
+
+  // init scene
+  function initScene(){
+    particles.length = 0;
+    lines.length = 0;
+    // create soft aurora blobs
+    for(let i=0;i<18;i++){
+      const px = Math.random()*w;
+      const py = h*0.1 + Math.random()*h*0.6;
+      const r = 160 + Math.random()*320;
+      const hue = 300 + Math.random()*60; // pink-violet
+      lines.push({x:px,y:py,r:r,h:hue, alpha:0.08 + Math.random()*0.12});
+    }
+  }
+
+  let last = performance.now();
+
+  function step(now){
+    const dt = Math.min(1/30, (now - last)/1000);
+    last = now;
+    // fade canvas gently
+    ctx.clearRect(0,0,w,h);
+    // draw aurora blobs
+    lines.forEach(L=>{
+      const grd = ctx.createRadialGradient(L.x, L.y, L.r*0.02, L.x, L.y, L.r);
+      grd.addColorStop(0, `hsla(${L.h},100%,78%,${L.alpha})`);
+      grd.addColorStop(0.35, `hsla(${L.h+20},95%,58%,${L.alpha*0.6})`);
+      grd.addColorStop(1, `rgba(5,2,10,0)`);
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.ellipse(L.x, L.y, L.r, L.r*0.6, 0, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    // spawn particles
+    if(Math.random() < 0.9){
+      const x = Math.random()*w;
+      const y = h + 20;
+      const dx = (Math.random()-0.5) * 30;
+      const dy = -(40 + Math.random()*90);
+      const r = 1 + Math.random()*3;
+      const life = 3 + Math.random()*4;
+      particles.push(new P(x,y,r,dx,dy,life, 320 + Math.random()*40));
+    }
+
+    // update & draw particles
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      const alive = p.step(dt);
+      if(!alive){ particles.splice(i,1); continue; }
+      const t = p.life / p.max;
+      const op = Math.min(0.9, 0.25 + (1-t)*0.9);
+      ctx.fillStyle = `hsla(${p.h},95%,70%,${op})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (1+t), 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // subtle moving grid lines (hologram)
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+    ctx.lineWidth = 1;
+    const gap = 140;
+    const offset = (now/2000)%gap;
+    for(let gx = -gap; gx < w + gap; gx += gap){
+      ctx.beginPath();
+      ctx.moveTo(gx + offset, 0);
+      ctx.lineTo(gx + offset - 60, h);
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  resize();
+  initScene();
+  requestAnimationFrame(step);
+})();
+
+/* -------------------------
+   small parallax hero interaction
+   ------------------------- */
+(function(){
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  window.addEventListener('mousemove', (e)=>{
+    const w = window.innerWidth, h = window.innerHeight;
+    const nx = (e.clientX - w/2) / (w/2);
+    const ny = (e.clientY - h/2) / (h/2);
+    hero.style.transform = `translate3d(${nx*6}px, ${ny*6}px, 0)`;
+  });
+  window.addEventListener('scroll', ()=>{
+    hero.style.transform = `translateY(${window.scrollY * 0.03}px)`;
+  });
+})();
+
+/* -------------------------
+   subtle header hide on scroll down
+   ------------------------- */
+(function(){
+  let last = 0;
+  const topbar = $('#topbar');
+  window.addEventListener('scroll', ()=>{
+    const s = window.scrollY;
+    if(s > last && s > 160) topbar.style.transform = 'translateY(-18px) scale(.995)';
+    else topbar.style.transform = 'translateY(0)';
+    last = s;
+  });
+})();
+
+</script>
+</body>
+</html>
