@@ -308,7 +308,7 @@
         <a href="#lokasi" class="btn btn-outline"><i class="fa-solid fa-location-dot"></i> Lihat lokasi</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><strong data-count="3">0</strong><span>Lokasi di Bangka Belitung</span></div>
+        <div class="stat"><strong data-count="4">0</strong><span>Lokasi di Bangka Belitung</span></div>
         <div class="stat"><strong>1–12</strong><span>Rentang usia anak</span></div>
         <div class="stat"><strong data-count="24" data-suffix="/7">0</strong><span>Pengawasan keamanan</span></div>
       </div>
@@ -432,7 +432,7 @@
       <div class="price-card">
         <span class="price-badge">Kunjungan reguler</span>
         <h3>Paket harian</h3>
-        <div class="price">Rp 35.000</div>
+        <div class="price">Rp 35.000/25.000</div>
         <p class="muted" style="font-size:13px">Untuk 1 anak / kunjungan</p>
         <ul>
           <li><i class="fa-solid fa-check"></i> Akses area bermain</li>
@@ -514,7 +514,7 @@
         <h2>Hubungi kami</h2>
         <p class="muted">Isi formulir dan pesan akan langsung terkirim ke WhatsApp kami — kami akan konfirmasi jadwal secepatnya.</p>
         <div class="info-line"><i class="fa-solid fa-phone"></i> +62 895-2674-0388</div>
-        <div class="info-line"><i class="fa-solid fa-clock"></i> Setiap hari, 09.00 – 20.00</div>
+        <div class="info-line"><i class="fa-solid fa-clock"></i> Setiap hari, 09.00 – 22.00</div>
       </div>
       <form id="waForm" class="card reveal">
         <div class="field">
@@ -658,7 +658,7 @@ menuBtn?.addEventListener('click', ()=> nav.classList.toggle('active'));
   const now = new Date();
   const hour = now.getHours() + now.getMinutes() / 60;
   const isOpen = hour >= 9 && hour < 20;
-  text.textContent = isOpen ? 'Buka sekarang · tutup 20.00' : 'Tutup · buka jam 09.00';
+  text.textContent = isOpen ? 'Buka sekarang · tutup 22.00' : 'Tutup · buka jam 09.00';
   badge.classList.toggle('closed', !isOpen);
 })();
 
