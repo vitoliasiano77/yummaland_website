@@ -3,718 +3,786 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Yummaland — Playground </title>
+<title>Yummaland — Ruang Main dan Belajar Anak</title>
 
-<!-- Fonts & icons -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
   :root{
-    --bg-900: #120017;
-    --text-1:#fff0f7;
-    --muted:#e3b9d2;
-    --pink-main:#ff3ea5;
-    --pink-light:#ff7dcf;
-    --pink-bg:rgba(255,62,165,0.12);
+    --bg:#FDF3F6;
+    --bg-alt:#F8E3EC;
+    --bg-deep:#3A1330;
+    --paper:#FFFCFD;
+    --ink:#3A1330;
+    --ink-soft:#7D5C71;
+    --coral:#E0316F;
+    --coral-deep:#B81D56;
+    --gold:#E3A94A;
+    --sage:#B14D80;
+    --berry:#7A2A55;
+    --line:rgba(58,19,48,.12);
+    --line-soft:rgba(58,19,48,.07);
+    --shadow-sm:0 10px 26px rgba(58,19,48,.08);
+    --shadow-lg:0 30px 70px rgba(58,19,48,.14);
+    --radius:20px;
   }
-
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{
-    height:100%;
-    background:radial-gradient(circle at top,#1a001d,#090008);
-    color:var(--text-1);
-    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    scroll-behavior:smooth;
-    overflow-x:hidden;
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;
   }
   a{color:inherit;text-decoration:none}
   img{display:block;max-width:100%;height:auto}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;color:var(--ink);letter-spacing:-.01em}
+  .container{max-width:1160px;margin:0 auto;padding:0 28px}
+  .muted{color:var(--ink-soft)}
 
-  #stage{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+  /* ---------- scroll progress ---------- */
+  .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--coral),var(--gold));z-index:60;transition:width .1s linear}
 
-  .page{
-    position:relative;z-index:2;min-height:100vh;
-    display:flex;flex-direction:column;gap:36px;
-    padding:28px;
-  }
+  /* ---------- status badge ---------- */
+  .status-badge{display:flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;background:var(--bg-alt);font-size:12px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+  .status-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 3px rgba(177,77,128,.18)}
+  .status-badge.closed .dot{background:var(--ink-soft);box-shadow:none}
+  @media(max-width:860px){.status-badge{display:none}}
 
-  /* HEADER Pink Frost */
+  /* ---------- header ---------- */
   header{
-    position:fixed;left:16px;right:16px;top:12px;z-index:30;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:10px 16px;border-radius:18px;
-    background:rgba(255,62,165,0.18);
-    backdrop-filter:blur(14px) saturate(180%);
-    -webkit-backdrop-filter:blur(14px) saturate(180%);
-    border:1px solid rgba(255,255,255,0.15);
-    box-shadow:0 6px 30px rgba(255,62,165,0.2);
+    position:sticky;top:0;z-index:40;
+    background:rgba(251,246,238,.88);backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid var(--line);
   }
+  .header-inner{max-width:1160px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .mark{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid var(--paper);box-shadow:0 4px 14px rgba(36,19,41,.18)}
+  .logo .mark img{width:100%;height:100%;object-fit:cover}
+  .logo strong{font-family:"Fraunces",serif;font-weight:600;font-size:19px;display:block;line-height:1.1}
+  .logo span{font-size:11.5px;color:var(--ink-soft)}
+  nav{display:flex;gap:2px;align-items:center}
+  nav a{padding:9px 13px;border-radius:9px;color:var(--ink-soft);font-weight:600;font-size:13.5px;transition:color .2s,background .2s}
+  nav a:hover{color:var(--ink);background:var(--bg-alt)}
+  .nav-cta{margin-left:8px;padding:10px 18px;border-radius:10px;background:var(--coral);color:#fff!important;font-weight:700}
+  .nav-cta:hover{background:var(--coral-deep)!important}
+  .menu-btn{display:none;font-size:21px;color:var(--ink);cursor:pointer;background:none;border:0}
 
-  .logo{display:flex;align-items:center;gap:10px}
-  .logo .mark{
-    width:46px;height:46px;border-radius:50%;overflow:hidden;
-    box-shadow:0 0 25px rgba(255,62,165,0.6);
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:12px;padding:14px 24px;font-weight:700;font-size:14.5px;border:1.5px solid transparent;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 14px 30px rgba(240,102,75,.32)}
+  .btn-primary:hover{background:var(--coral-deep);transform:translateY(-2px)}
+  .btn-outline{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-outline:hover{border-color:var(--ink);transform:translateY(-2px)}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-dark:hover{background:#3a2140;transform:translateY(-2px)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:64px 0 20px}
+  .hero-inner{max-width:1160px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--berry);font-weight:600}
+  .hero-tag i{font-size:12px}
+  h1.display{font-size:clamp(40px,5.4vw,68px);line-height:1.04;margin:16px 0 20px;font-weight:600}
+  h1.display em{font-style:normal;color:var(--coral)}
+  .hero p.lead{max-width:520px;font-size:17px;color:var(--ink-soft)}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .hero-stats{display:flex;gap:32px;margin-top:38px;padding-top:24px;border-top:1px solid var(--line)}
+  .stat strong{display:block;font-family:"Fraunces",serif;font-size:26px;font-weight:600}
+  .stat span{font-size:12.5px;color:var(--ink-soft)}
+
+  .hero-visual{position:relative;height:440px}
+  .hv-card{position:absolute;border-radius:24px;overflow:hidden;box-shadow:var(--shadow-lg);border:6px solid var(--paper)}
+  .hv-1{width:64%;height:78%;top:0;right:0}
+  .hv-2{width:46%;height:44%;left:0;bottom:0;z-index:2}
+  .hv-badge{position:absolute;left:8%;top:8%;z-index:3;background:var(--paper);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px;max-width:190px}
+  .hv-badge i{color:var(--gold);font-size:18px}
+  .hv-badge span{font-size:12.5px;font-weight:600;line-height:1.35}
+
+  /* ---------- section rhythm ---------- */
+  section{scroll-margin-top:88px;padding:76px 0}
+  section.alt{background:var(--bg-alt)}
+  section.dark{background:var(--bg-deep);color:#F4EAE0}
+  section.dark h2,section.dark h3{color:#fff}
+  .section-head{max-width:620px;margin-bottom:38px}
+  .section-head .kicker{color:var(--berry);font-weight:600;font-size:13.5px}
+  section h2{font-size:clamp(28px,3.2vw,38px);font-weight:500;margin-top:8px}
+  .section-head p{margin-top:12px;color:var(--ink-soft)}
+
+  /* ---------- generic card ---------- */
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+
+  /* ---------- fasilitas ---------- */
+  .facility-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .facility{padding:24px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+  .facility i{font-size:19px;color:var(--coral);margin-bottom:14px;display:block}
+  .facility h3{font-size:16.5px;font-weight:600;margin-bottom:6px;font-family:Inter}
+  .facility p{font-size:13.5px;color:var(--ink-soft)}
+
+  /* ---------- pengalaman ---------- */
+  .exp-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:44px}
+  .exp-item{padding:26px 22px;border-radius:18px;border:1px solid var(--line);background:var(--paper)}
+  .exp-item .emoji{font-size:26px;margin-bottom:14px}
+  .exp-item strong{display:block;font-size:15.5px;margin-bottom:6px}
+  .exp-item span{font-size:13px;color:var(--ink-soft);line-height:1.6}
+
+  .age-panel{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px;align-items:center;padding:32px;border-radius:24px;background:var(--paper);border:1px solid var(--line)}
+  .age-panel h3{font-size:19px;font-weight:600;margin-bottom:14px}
+  .age-selector{display:flex;gap:8px;flex-wrap:wrap}
+  .age-btn{border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);border-radius:999px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}
+  .age-btn.active,.age-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .age-result{padding:20px 22px;border-radius:16px;background:var(--bg-alt);color:var(--ink);font-size:14.5px;line-height:1.7;border-left:3px solid var(--coral)}
+
+  /* ---------- galeri ---------- */
+  .gallery{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:120px;gap:10px;margin-top:6px}
+  .frame{border-radius:14px;overflow:hidden;cursor:zoom-in;box-shadow:var(--shadow-sm)}
+  .frame img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+  .frame:hover img{transform:scale(1.06)}
+  .frame.tall{grid-row:span 2}
+
+  /* ---------- harga ---------- */
+  .price-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .price-card{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;padding:30px;position:relative}
+  .price-card.popular{border-color:var(--coral);box-shadow:0 20px 48px rgba(240,102,75,.16)}
+  .price-badge{display:inline-block;font-size:11.5px;font-weight:700;color:var(--coral);background:rgba(240,102,75,.1);padding:5px 11px;border-radius:999px;margin-bottom:14px}
+  .price-card h3{font-size:18px;font-weight:600;margin-bottom:6px;font-family:Inter}
+  .price-card .price{font-family:"Fraunces",serif;font-size:30px;font-weight:600;color:var(--berry);margin:8px 0 14px}
+  .price-card ul{list-style:none}
+  .price-card li{font-size:13.5px;color:var(--ink-soft);padding:6px 0;display:flex;gap:9px;align-items:flex-start}
+  .price-card li i{color:var(--sage);margin-top:3px;font-size:11px}
+
+  /* ---------- testimoni ---------- */
+  .testi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .testi{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;gap:16px}
+  .testi img{width:50px;height:50px;border-radius:50%;object-fit:cover;flex-shrink:0}
+  .testi strong{display:block;margin-bottom:6px;font-size:15px}
+  .testi p{font-size:14px;color:var(--ink-soft);font-style:italic}
+
+  /* ---------- faq ---------- */
+  .faq{max-width:760px}
+  .faq-item{border:1px solid var(--line);border-radius:14px;background:var(--paper);margin-bottom:10px;overflow:hidden}
+  .faq-q{width:100%;padding:18px 20px;background:none;border:0;color:var(--ink);text-align:left;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;display:flex;justify-content:space-between;gap:16px}
+  .faq-q i{color:var(--coral);transition:transform .25s}
+  .faq-a{max-height:0;overflow:hidden;padding:0 20px;color:var(--ink-soft);font-size:13.5px;line-height:1.7;transition:max-height .3s ease,padding .3s ease}
+  .faq-item.open .faq-a{max-height:160px;padding:0 20px 18px}
+  .faq-item.open .faq-q i{transform:rotate(45deg)}
+
+  /* ---------- kontak ---------- */
+  .kontak-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:44px;align-items:start}
+  .kontak-info h2{margin-bottom:14px}
+  .kontak-info .info-line{display:flex;gap:12px;align-items:flex-start;margin-top:16px;font-size:14px;color:var(--ink-soft)}
+  .kontak-info .info-line i{color:var(--coral);margin-top:3px}
+  form.card{display:flex;flex-direction:column;gap:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+  input,textarea{width:100%;font:inherit;padding:13px 14px;border-radius:11px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s}
+  input:focus,textarea:focus{border-color:var(--coral);box-shadow:0 0 0 4px rgba(224,49,111,.12)}
+  .form-success{display:none;align-items:center;gap:9px;padding:12px 14px;border-radius:11px;background:rgba(224,49,111,.08);color:var(--berry);font-size:13px;font-weight:600}
+  .form-success.show{display:flex}
+  .form-success i{color:var(--coral)}
+
+  /* ---------- instagram ---------- */
+  .insta-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:24px}
+  .insta-tile{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;display:block;box-shadow:var(--shadow-sm)}
+  .insta-tile img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+  .insta-tile span{position:absolute;inset:0;background:rgba(58,19,48,0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;opacity:0;transition:.25s}
+  .insta-tile:hover img{transform:scale(1.08)}
+  .insta-tile:hover span{background:rgba(58,19,48,.45);opacity:1}
+  @media(max-width:600px){.insta-strip{grid-template-columns:repeat(3,1fr)}}
+
+  /* ---------- lokasi ---------- */
+  .park-highlight{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:32px;border-radius:24px;background:linear-gradient(120deg,rgba(240,102,75,.09),rgba(124,63,99,.08));
+    border:1px solid var(--line);margin-bottom:28px;
   }
-  .logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-  .logo span{font-weight:700;letter-spacing:0.6px;color:var(--text-1);font-size:18px;text-shadow:0 0 10px rgba(255,62,165,0.4)}
+  .park-highlight .kicker{color:var(--berry);font-weight:600;font-size:13px}
+  .park-highlight h3{font-size:21px;font-weight:600;margin:6px 0 4px}
+  .park-highlight p{color:var(--ink-soft);font-size:13.5px}
+  .loc-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .loc-tab{border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}
+  .loc-tab.active,.loc-tab:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .map-grid{max-width:640px;margin:0 auto}
+  .contact-map{padding:20px;border-radius:20px;background:var(--paper);border:1px solid var(--line)}
+  .contact-map h3{font-size:15.5px;font-weight:600;margin-bottom:12px;font-family:Inter}
+  .map-frame{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .map-frame iframe{display:block;filter:saturate(.9)}
+  .contact-map .alamat{color:var(--ink-soft);margin:13px 0;line-height:1.6;font-size:12.5px}
 
-  nav{display:flex;gap:10px;align-items:center}
-  nav a{padding:10px 12px;border-radius:10px;font-weight:600;color:var(--muted);transition:all .18s}
-  nav a:hover{color:var(--pink-light);text-shadow:0 0 12px var(--pink-main)}
-  .menu-btn{display:none;font-size:22px;color:var(--pink-light);cursor:pointer}
+  /* ---------- visit banner ---------- */
+  .visit-banner{
+    display:flex;align-items:center;justify-content:space-between;gap:28px;
+    background:var(--ink);color:#fff;padding:0;
+  }
+  .visit-inner{max-width:1160px;margin:0 auto;padding:56px 28px;display:flex;align-items:center;justify-content:space-between;gap:28px;width:100%}
+  .visit-banner h3{color:#fff;font-size:clamp(24px,3vw,32px);font-weight:500;margin:8px 0}
+  .visit-banner .kicker{color:var(--gold);font-weight:600;font-size:13px}
+  .visit-banner p{color:rgba(255,255,255,.68);font-size:14px;max-width:380px}
+  .visit-banner .actions{display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0}
+  .visit-banner .btn-outline{border-color:rgba(255,255,255,.3);color:#fff}
+  .visit-banner .btn-outline:hover{border-color:#fff}
 
-  @media(max-width:900px){
+  /* ---------- footer ---------- */
+  footer{padding:34px 0;text-align:center}
+  footer .social{display:flex;justify-content:center;gap:20px;margin-top:14px}
+  footer .social a{color:var(--ink-soft);font-size:18px;transition:color .2s}
+  footer .social a:hover{color:var(--coral)}
+
+  /* ---------- floating booking ---------- */
+  .floating-book{
+    position:fixed;right:24px;bottom:24px;z-index:50;
+    display:flex;align-items:center;gap:9px;padding:14px 20px;border-radius:999px;
+    background:var(--coral);color:#fff;font-weight:700;font-size:13px;
+    box-shadow:0 16px 36px rgba(240,102,75,.4);
+  }
+  .floating-book:hover{background:var(--coral-deep)}
+
+  /* ---------- lightbox / toast ---------- */
+  #lightbox{position:fixed;inset:0;background:rgba(20,10,24,.9);display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
+  #lightboxImg{max-width:92%;max-height:86%;border-radius:12px;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:100;padding:13px 18px;border-radius:12px;background:var(--ink);color:#fff;font-size:13px;box-shadow:var(--shadow-lg);transition:.3s}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.visible{opacity:1;transform:none}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:980px){
     nav{display:none}
     .menu-btn{display:block}
+    nav.active{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;padding:10px;background:var(--paper);border-bottom:1px solid var(--line)}
+    nav.active a{padding:13px}
+    .hero-inner{grid-template-columns:1fr}
+    .hero-visual{height:320px;order:-1}
+    .facility-row,.exp-row{grid-template-columns:repeat(2,1fr)}
+    .age-panel{grid-template-columns:1fr}
+    .price-row,.testi-row,.map-grid{grid-template-columns:1fr}
+    .kontak-wrap{grid-template-columns:1fr}
+    .visit-inner{flex-direction:column;text-align:center}
+    .gallery{grid-template-columns:repeat(3,1fr);grid-auto-rows:100px}
   }
-
-  /* HERO */
-  .hero{
-    margin-top:90px;
-    display:flex;align-items:center;justify-content:center;gap:28px;
-    padding:36px;border-radius:18px;
-    background:rgba(255,62,165,0.15);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,0.1);
-    box-shadow:0 12px 50px rgba(255,62,165,0.2);
-    flex-wrap:wrap;
-  }
-  .hero-left{flex:1;min-width:280px;padding:12px}
-  .kicker{
-    display:inline-flex;gap:8px;align-items:center;padding:6px 10px;
-    border-radius:999px;background:rgba(255,255,255,0.2);
-    color:var(--pink-light);font-weight:700;font-size:12px;
-  }
-  h1{
-    font-family:Fredoka One, Inter; font-size:42px;
-    background:linear-gradient(90deg,var(--pink-main),#b84eff);
-    -webkit-background-clip:text;color:transparent;
-    margin:18px 0 10px;
-  }
-  .lead{color:var(--muted);font-size:16px;line-height:1.45;max-width:620px}
-  .ctas{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-  .btn-neo{
-    border-radius:999px;padding:12px 20px;font-weight:800;
-    border:1px solid rgba(255,255,255,0.25);cursor:pointer;
-    background:rgba(255,62,165,0.15);color:white;
-    backdrop-filter:blur(10px);
-  }
-  .btn-neo.primary{
-    background:linear-gradient(90deg,rgba(255,20,147,0.25),rgba(123,59,255,0.25));
-    box-shadow:0 12px 40px rgba(255,20,147,0.25);
-  }
-  .btn-neo:hover{transform:translateY(-3px);box-shadow:0 15px 50px rgba(255,62,165,0.3)}
-
-  /* CARD Frost */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1}
-  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:600px){.grid{grid-template-columns:1fr}}
-
-  .card{
-    border-radius:16px;padding:18px;
-    background:rgba(255,62,165,0.12);
-    backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.15);
-    box-shadow:0 10px 40px rgba(255,62,165,0.2);
-    transition:transform .3s;
-  }
-  .card:hover{transform:translateY(-6px)}
-  .card .icon{
-    width:64px;height:64px;border-radius:12px;display:grid;place-items:center;margin-bottom:10px;
-    background:rgba(255,62,165,0.25);color:white;font-size:28px;
-  }
-  .card h3{font-size:18px;margin-bottom:6px;color:var(--text-1)}
-  .card p{color:var(--muted);font-size:14px;line-height:1.45}
-
-  /* FORM & FOOTER */
-  form.card, footer{
-    background:rgba(255,62,165,0.12);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,0.15);
-    box-shadow:0 10px 40px rgba(255,62,165,0.18);
-  }
-  footer{
-    margin-top:28px;padding:28px;border-radius:14px;text-align:center;
-  }
-
-  footer .social {
-    display:flex;justify-content:center;align-items:center;gap:16px;margin-top:10px;
-  }
-  footer .social a {
-    color: var(--pink-light);
-    font-size: 22px;
-    transition: all 0.25s ease;
-  }
-  footer .social a:hover {
-    color: white;
-    text-shadow: 0 0 16px var(--pink-main), 0 0 30px var(--pink-light);
-    transform: translateY(-3px);
-  }
-
   @media(max-width:600px){
-    .page{padding:16px}
-    h1{font-size:30px}
-    .lead{font-size:14px}
-    .btn-neo{padding:10px 16px;font-size:14px}
-    .card{padding:14px}
-    .logo span{font-size:16px}
+    .container{padding:0 18px}
+    section{padding:52px 0}
+    .facility-row,.exp-row{grid-template-columns:1fr 1fr}
+    .park-highlight{flex-direction:column;align-items:flex-start;padding:24px}
+    .gallery{grid-template-columns:repeat(2,1fr)}
   }
-
-  /* ===== FIX GALERI YUMMALAND ===== */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-  margin-top: 12px;
-  justify-items: center;
-}
-
-.frame {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 14px;
-  overflow: hidden;
-  padding: 6px;
-  background: rgba(255,62,165,0.15);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 4px 24px rgba(255,62,165,0.15);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.frame:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 40px rgba(255,62,165,0.25);
-}
-
-.frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-  display: block;
-}
-
-.contact-map {
-  text-align: center;
-  margin-top: 24px;
-  padding: 20px;
-  border-radius: 16px;
-  background: rgba(255,62,165,0.12);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 8px 32px rgba(255,62,165,0.15);
-}
-
-.contact-map {
-  text-align: center;
-  margin-top: 24px;
-  padding: 20px;
-  border-radius: 16px;
-  background: rgba(255,62,165,0.12);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 8px 32px rgba(255,62,165,0.15);
-}
-
-.contact-map h3 {
-  color: var(--pink-light);
-  font-size: 18px;
-  margin-bottom: 14px;
-  text-shadow: 0 0 10px rgba(255,62,165,0.5);
-}
-
-.map-frame {
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 8px 24px rgba(255,62,165,0.2);
-  transition: transform 0.3s ease;
-}
-
-.map-frame:hover {
-  transform: scale(1.02);
-}
-
-.contact-map .alamat {
-  color: var(--muted);
-  margin: 14px 0;
-  line-height: 1.4;
-  font-size: 14px;
-}
-
-.contact-map .btn-neo {
-  margin-top: 10px;
-  display: inline-block;
-  font-size: 15px;
-}
-
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
-
-
 </head>
 <body>
 
-<!-- canvas stage for aurora/particles -->
-<canvas id="stage" aria-hidden="true"></canvas>
+<div class="scroll-progress" id="scrollProgress"></div>
 
-<div class="page" id="app">
-
-  <!-- header -->
-  <header id="topbar">
+<header>
+  <div class="header-inner">
     <div class="logo">
-      <div class="mark" style="width:46px;height:46px;border-radius:50%;overflow:hidden;box-shadow:0 8px 36px rgba(255,20,147,0.25);">
-     <img src="img/yumma.png" alt="Foto Saya" style="width:100%;height:100%;object-fit:cover;">
-      </div>
-      <span>Yummaland</span>
+      <div class="mark"><img src="img/yumma.png" alt="Yummaland"></div>
+      <div><strong>Yummaland</strong><span>Bermain &amp; belajar bersama</span></div>
     </div>
-
+    <div class="status-badge" id="statusBadge"><span class="dot"></span><span id="statusText">Memuat jam buka…</span></div>
     <nav id="nav">
       <a href="#tentang">Tentang</a>
       <a href="#fasilitas">Fasilitas</a>
+      <a href="#pengalaman">Experience</a>
       <a href="#galeri">Galeri</a>
       <a href="#harga">Harga</a>
       <a href="#testimoni">Testimoni</a>
-      <a href="#kontak">Kontak</a>
+      <a href="#lokasi">Lokasi</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontak" class="nav-cta">Reservasi</a>
     </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</header>
 
-    <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
-  </header>
-
-  <!-- hero / showcase -->
-  <section class="hero reveal" id="home" aria-label="Hero">
-    <div class="hero-left">
-      <div class="kicker">Yummaland</div>
-      <h1>Selamat Datang di Yummaland </h1>
-      <p class="lead">Yummaland hadir untuk memberikan ruang bermain kreatif bagi anak-anak dengan fasilitas aman, staf ramah, dan program edukasi menyenangkan.</p>
-    </div>
-
-    <!-- right: info grid -->
-    <div class="grid" aria-hidden="true" style="max-width:680px">
-      <div class="card">
-        <div class="icon"><i class="fa-solid fa-child"></i></div>
-        <h3>Area Bermain Interaktif</h3>
-        <p>Soft-floor, sensor motion play, dan zona edukasi untuk 1-12 tahun.</p>
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="reveal">
+      <div class="hero-tag"><i class="fa-solid fa-star"></i> Tiga lokasi di Bangka Belitung</div>
+      <h1 class="display">Ruang main yang <em>terasa aman</em>, dirancang untuk tumbuh kembang anak.</h1>
+      <p class="lead">Yummaland menggabungkan permainan aktif, zona edukasi, dan kenyamanan orang tua dalam satu tempat — dijaga staf ramah dan lingkungan yang benar-benar bersih.</p>
+      <div class="hero-actions">
+        <a href="#kontak" class="btn btn-primary"><i class="fa-solid fa-calendar-check"></i> Reservasi kunjungan</a>
+        <a href="#lokasi" class="btn btn-outline"><i class="fa-solid fa-location-dot"></i> Lihat lokasi</a>
       </div>
-      <div class="card">
-        <div class="icon"><i class="fa-solid fa-birthday-cake"></i></div>
-        <h3>Paket Ulang Tahun</h3>
-        <p>Decor futuristik, photobooth neon, dan paket snack sehat.</p>
-      </div>
-      <div class="card">
-        <div class="icon"><i class="fa-solid fa-coffee"></i></div>
-        <h3>Kafe Orang Tua</h3>
-        <p>Area nyaman dengan live-monitor ke playground & free Wi-Fi.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong data-count="3">0</strong><span>Lokasi di Bangka Belitung</span></div>
+        <div class="stat"><strong>1–12</strong><span>Rentang usia anak</span></div>
+        <div class="stat"><strong data-count="24" data-suffix="/7">0</strong><span>Pengawasan keamanan</span></div>
       </div>
     </div>
-  </section>
-
-  <!-- Tentang -->
-  <section id="tentang" class="reveal">
-    <div style="max-width:1080px;margin:0 auto">
-      <h2>Tentang Kami</h2>
-      <p class="muted">Yummaland adalah tempat bermain anak yang aman, menyenangkan, dan edukatif. Kami dirancang untuk menjadi destinasi favorit keluarga, di mana anak-anak bisa bermain, belajar, dan mengeksplorasi kreativitas mereka dalam lingkungan yang aman dan nyaman.</p>
+    <div class="hero-visual reveal" id="heroVisual">
+      <div class="hv-card hv-1"><img src="img/foto2.jpg" alt="Anak bermain di Yummaland"></div>
+      <div class="hv-card hv-2"><img src="img/foto3.jpg" alt="Area edukasi Yummaland"></div>
+      <div class="hv-badge"><i class="fa-solid fa-shield-heart"></i><span>Diawasi staf terlatih setiap saat</span></div>
     </div>
-  </section>
-
-  <!-- fasilitas -->
-  <section id="fasilitas" class="reveal">
-    <div style="max-width:1080px;margin:0 auto">
-      <h2>Fasilitas</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px">
-        <div class="card"><div class="icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Keamanan 24/7</h3><p class="muted">Staf terlatih & CCTV.</p></div>
-        <div class="card"><div class="icon"><i class="fa-solid fa-wifi"></i></div><h3>Wi-Fi & Charging</h3><p class="muted">Koneksi cepat di seluruh area.</p></div>
-        <div class="card"><div class="icon"><i class="fa-solid fa-music"></i></div><h3>Musik anak anak</h3><p class="muted">Stimulus suara & cahaya terkontrol.</p></div>
-        <div class="card"><div class="icon"><i class="fa-solid fa-camera"></i></div><h3>Spot foto anak keren</h3><p class="muted">Background keren untuk social post.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- galeri -->
-  <section id="galeri" class="reveal">
-    <div style="max-width:1080px;margin:0 auto">
-      <h2>Galeri</h2>
-      <div class="gallery" id="gallery">
-        <div class="frame"><img src="img/foto2.jpg" alt="Foto 2"></div>
-        <div class="frame"><img src="img/foto3.jpg" alt="Foto 3"></div>
-        <div class="frame"><img src="img/foto4.jpg" alt="Foto 4"></div>
-        <div class="frame"><img src="img/foto5.jpg" alt="Foto 5"></div>
-        <div class="frame"><img src="img/foto6.jpg" alt="Foto 6"></div>
-        <div class="frame"><img src="img/foto7.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto8.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto9.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto10.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto11.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto12.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto13.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto14.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto15.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto16.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto17.jpg" alt=""></div>
-        <div class="frame"><img src="img/foto18.jpg" alt=""></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- harga -->
-  <section id="harga" class="reveal">
-    <div style="max-width:1080px;margin:0 auto">
-      <h2>Harga & Paket</h2>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
-        <div style="flex:1;min-width:200px" class="card"><h3>Paket Harian</h3><p class="muted">Rp 35.000 / anak</p></div>
-        <div style="flex:1;min-width:200px" class="card"><h3>Paket Kelompok </h3><p class="muted">Rp 500.000 / Rombongan</p></div>
-        <div style="flex:1;min-width:200px" class="card"><h3>Paket Ulang Tahun</h3><p class="muted">Mulai Rp 2.000.000</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- testimoni -->
-  <section id="testimoni" class="reveal">
-    <div style="max-width:1080px;margin:0 auto">
-      <h2>Testimoni</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px">
-        <div class="card"><img src="img/mom.jpg" alt="" style="width:52px;height:52px;border-radius:999px;float:left;margin-right:10px"><strong>Ibu Susan</strong><p class="muted">"Anak saya betah! Staf ramah."</p></div>
-        <div class="card"><img src="img/dad.jpg" alt="" style="width:52px;height:52px;border-radius:999px;float:left;margin-right:10px"><strong>Bapak Dimas</strong><p class="muted">"Rekomendasi, fasilitas lengkap."</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- kontak -->
- <section id="kontak" class="reveal">
-  <div style="max-width:720px;margin:0 auto">
-    <h2>Hubungi Kami</h2>
-    <form id="waForm" class="card" style="display:flex;flex-direction:column;gap:10px">
-      <input id="custName" placeholder="Nama Anda" required
-        style="padding:10px;border-radius:8px;background:transparent;
-               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)">
-      <input id="playDate" type="date" required
-        style="padding:10px;border-radius:8px;background:transparent;
-               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)">
-      <textarea id="note" rows="3" placeholder="Catatan tambahan"
-        style="padding:10px;border-radius:8px;background:transparent;
-               border:1px solid rgba(255,255,255,0.04);color:var(--text-1)"></textarea>
-
-      <button class="btn-neo primary" type="submit">Kirim ke WhatsApp</button>
-    </form>
   </div>
 </section>
 
-<!-- 🌸 LOKASI 1 -->
-<div class="contact-map">
-  <h3>📍 Yummaland PGK – Pangkal Pinang</h3>
-  <div class="map-frame">
-    <iframe 
-      src="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung&output=embed"
-      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"></iframe>
+<section id="tentang">
+  <div class="container" style="max-width:760px">
+    <div class="section-head" style="margin-bottom:0">
+      <div class="kicker">Tentang kami</div>
+      <h2>Tempat main yang dipercaya keluarga</h2>
+      <p>Yummaland adalah tempat bermain anak yang aman, menyenangkan, dan edukatif — dirancang menjadi destinasi favorit keluarga, tempat anak-anak bermain, belajar, dan mengeksplorasi kreativitas dalam lingkungan yang nyaman.</p>
+    </div>
   </div>
-  <p class="alamat">
-    Yummaland PGK<br>
-    Jl. Pahlawan 12, Kacang Pedang, Kec. Gerunggang,<br>
-    Kota Pangkal Pinang, Kepulauan Bangka Belitung
-  </p>
-  <a href="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung" 
-     target="_blank" class="btn-neo">Lihat di Google Maps</a>
+</section>
+
+<section id="fasilitas" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Fasilitas</div>
+      <h2>Semua yang keluarga butuhkan, dalam satu kunjungan</h2>
+    </div>
+    <div class="facility-row">
+      <div class="facility"><i class="fa-solid fa-shield-halved"></i><h3>Keamanan 24/7</h3><p>Staf terlatih dan CCTV di seluruh area.</p></div>
+      <div class="facility"><i class="fa-solid fa-wifi"></i><h3>Wi-Fi &amp; charging</h3><p>Koneksi cepat di seluruh area untuk orang tua.</p></div>
+      <div class="facility"><i class="fa-solid fa-music"></i><h3>Musik anak-anak</h3><p>Stimulus suara dan cahaya yang terkontrol.</p></div>
+      <div class="facility"><i class="fa-solid fa-camera"></i><h3>Spot foto keluarga</h3><p>Latar menarik untuk momen yang layak dibagikan.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pengalaman">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Yummaland experience</div>
+      <h2>Lebih dari sekadar playground</h2>
+    </div>
+    <div class="exp-row">
+      <div class="exp-item"><div class="emoji">🎨</div><strong>Creative zone</strong><span>Ruang untuk menggambar, berkreasi, dan mengeksplorasi imajinasi.</span></div>
+      <div class="exp-item"><div class="emoji">🧗</div><strong>Active play</strong><span>Aktivitas fisik seru yang membuat anak aktif dan percaya diri.</span></div>
+      <div class="exp-item"><div class="emoji">🧠</div><strong>Edu play</strong><span>Permainan edukatif yang dikemas menyenangkan dan interaktif.</span></div>
+      <div class="exp-item"><div class="emoji">🎂</div><strong>Birthday moment</strong><span>Rayakan hari spesial dengan suasana yang lebih berkesan.</span></div>
+    </div>
+    <div class="age-panel">
+      <div>
+        <h3>Rekomendasi berdasarkan usia</h3>
+        <p class="muted" style="font-size:13.5px;margin-bottom:16px">Pilih rentang usia anak untuk saran aktivitas yang paling cocok.</p>
+        <div class="age-selector">
+          <button class="age-btn active" data-age="1-3">1–3 tahun</button>
+          <button class="age-btn" data-age="4-6">4–6 tahun</button>
+          <button class="age-btn" data-age="7-9">7–9 tahun</button>
+          <button class="age-btn" data-age="10-12">10–12 tahun</button>
+        </div>
+      </div>
+      <div class="age-result" id="ageResult">Rekomendasi: area soft play, aktivitas sensorik, dan permainan ringan bersama orang tua.</div>
+    </div>
+  </div>
+</section>
+
+<section id="galeri" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Galeri</div>
+      <h2>Sekilas suasana di Yummaland</h2>
+    </div>
+    <div class="gallery" id="gallery">
+      <div class="frame tall"><img src="img/foto2.jpg" alt="Foto 2"></div>
+      <div class="frame"><img src="img/foto3.jpg" alt="Foto 3"></div>
+      <div class="frame"><img src="img/foto4.jpg" alt="Foto 4"></div>
+      <div class="frame tall"><img src="img/foto5.jpg" alt="Foto 5"></div>
+      <div class="frame"><img src="img/foto6.jpg" alt="Foto 6"></div>
+      <div class="frame"><img src="img/foto7.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto8.jpg" alt=""></div>
+      <div class="frame tall"><img src="img/foto9.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto10.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto11.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto12.jpg" alt=""></div>
+      <div class="frame tall"><img src="img/foto13.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto14.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto15.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto16.jpg" alt=""></div>
+      <div class="frame tall"><img src="img/foto17.jpg" alt=""></div>
+      <div class="frame"><img src="img/foto18.jpg" alt=""></div>
+    </div>
+  </div>
+</section>
+
+<section id="instagram">
+  <div class="container">
+    <div class="section-head" style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:0">
+      <div>
+        <div class="kicker">Instagram</div>
+        <h2>Cuplikan terbaru @yumma_land</h2>
+      </div>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="fa-brands fa-instagram"></i> Follow di Instagram</a>
+    </div>
+    <div class="insta-strip">
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto6.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto8.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto10.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto14.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto16.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" rel="noopener noreferrer" class="insta-tile"><img src="img/foto18.jpg" alt=""><span><i class="fa-brands fa-instagram"></i></span></a>
+    </div>
+  </div>
+</section>
+
+<section id="harga">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Harga &amp; paket</div>
+      <h2>Pilih paket sesuai kebutuhan</h2>
+    </div>
+    <div class="price-row">
+      <div class="price-card">
+        <span class="price-badge">Kunjungan reguler</span>
+        <h3>Paket harian</h3>
+        <div class="price">Rp 35.000</div>
+        <p class="muted" style="font-size:13px">Untuk 1 anak / kunjungan</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Akses area bermain</li>
+          <li><i class="fa-solid fa-check"></i> Area edukasi</li>
+          <li><i class="fa-solid fa-check"></i> Waktu bersama keluarga</li>
+        </ul>
+      </div>
+      <div class="price-card popular">
+        <span class="price-badge">Paling dipilih</span>
+        <h3>Paket kelompok</h3>
+        <div class="price">Rp 500.000</div>
+        <p class="muted" style="font-size:13px">Untuk rombongan sekolah / komunitas</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Cocok untuk sekolah / komunitas</li>
+          <li><i class="fa-solid fa-check"></i> Aktivitas kelompok terpandu</li>
+          <li><i class="fa-solid fa-check"></i> Harga lebih hemat per anak</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <span class="price-badge">Perayaan</span>
+        <h3>Paket ulang tahun</h3>
+        <div class="price">Mulai Rp 2 Jt</div>
+        <p class="muted" style="font-size:13px">Rayakan momen spesial</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Konsep dekorasi pesta</li>
+          <li><i class="fa-solid fa-check"></i> Area celebration khusus</li>
+          <li><i class="fa-solid fa-check"></i> Sesi foto keluarga</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimoni" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Testimoni</div>
+      <h2>Kata orang tua tentang Yummaland</h2>
+    </div>
+    <div class="testi-row">
+      <div class="testi"><img src="img/mom.jpg" alt=""><div><strong>Ibu Susan</strong><p>"Anak saya betah! Stafnya ramah dan sabar menghadapi anak-anak."</p></div></div>
+      <div class="testi"><img src="img/dad.jpg" alt=""><div><strong>Bapak Dimas</strong><p>"Rekomendasi banget, fasilitasnya lengkap dan tempatnya bersih."</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">FAQ</div>
+      <h2>Pertanyaan yang sering ditanyakan</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item open">
+        <button class="faq-q">Apakah orang tua harus mendampingi anak? <i class="fa-solid fa-plus"></i></button>
+        <div class="faq-a">Anak usia di bawah 5 tahun disarankan didampingi orang tua. Anak yang lebih besar tetap diawasi staf kami selama bermain.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah bisa reservasi untuk rombongan sekolah? <i class="fa-solid fa-plus"></i></button>
+        <div class="faq-a">Bisa. Silakan gunakan paket kelompok di bagian Harga, lalu hubungi kami melalui formulir atau WhatsApp untuk atur jadwal.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Berapa lama sebelum tanggal ulang tahun sebaiknya booking? <i class="fa-solid fa-plus"></i></button>
+        <div class="faq-a">Kami sarankan minimal 1 minggu sebelumnya agar dekorasi dan jadwal bisa disiapkan dengan baik.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah tersedia makanan dan minuman di lokasi? <i class="fa-solid fa-plus"></i></button>
+        <div class="faq-a">Tersedia kafe untuk orang tua dengan area yang terhubung langsung ke pandangan playground.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontak" class="alt">
+  <div class="container">
+    <div class="kontak-wrap">
+      <div class="kontak-info reveal">
+        <div class="kicker">Reservasi</div>
+        <h2>Hubungi kami</h2>
+        <p class="muted">Isi formulir dan pesan akan langsung terkirim ke WhatsApp kami — kami akan konfirmasi jadwal secepatnya.</p>
+        <div class="info-line"><i class="fa-solid fa-phone"></i> +62 895-2674-0388</div>
+        <div class="info-line"><i class="fa-solid fa-clock"></i> Setiap hari, 09.00 – 20.00</div>
+      </div>
+      <form id="waForm" class="card reveal">
+        <div class="field">
+          <label for="custName">Nama Anda</label>
+          <input id="custName" placeholder="Nama lengkap" required>
+        </div>
+        <div class="field">
+          <label for="playDate">Tanggal kunjungan</label>
+          <input id="playDate" type="date" required>
+        </div>
+        <div class="field">
+          <label for="note">Catatan tambahan</label>
+          <textarea id="note" rows="3" placeholder="Contoh: rombongan 15 anak, atau paket ulang tahun"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit"><i class="fa-brands fa-whatsapp"></i> Kirim ke WhatsApp</button>
+        <div class="form-success" id="formSuccess"><i class="fa-solid fa-circle-check"></i> Siap — lanjutkan percakapan di tab WhatsApp yang baru terbuka.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="lokasi">
+  <div class="container">
+    <div class="park-highlight">
+      <div>
+        <div class="kicker">Lokasi favorit keluarga</div>
+        <h3>Yummaland Park</h3>
+        <p>Temukan lokasi Yummaland Park langsung melalui Google Maps.</p>
+      </div>
+      <a class="btn btn-dark" href="https://share.google/4NW23xp7UHeGx6szC" target="_blank" rel="noopener noreferrer">
+        <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
+      </a>
+    </div>
+
+    <div class="section-head">
+      <div class="kicker">Semua lokasi</div>
+      <h2>Kunjungi Yummaland terdekat</h2>
+    </div>
+
+    <div class="loc-tabs" id="locTabs">
+      <button class="loc-tab active" data-loc="pgk">Pangkal Pinang</button>
+      <button class="loc-tab" data-loc="muntok">Muntok</button>
+      <button class="loc-tab" data-loc="sungailiat">Sungailiat</button>
+    </div>
+
+    <div class="map-grid" id="mapGrid">
+      <div class="contact-map" data-loc="pgk">
+        <h3>Yummaland PGK – Pangkal Pinang</h3>
+        <div class="map-frame">
+          <iframe src="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung&output=embed"
+            width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p class="alamat">Jl. Pahlawan 12, Kacang Pedang, Kec. Gerunggang, Kota Pangkal Pinang, Kepulauan Bangka Belitung</p>
+        <a href="https://www.google.com/maps?q=Yummaland+PGK,+Jl.+Pahlawan+12,+Kacang+Pedang,+Kec.+Gerunggang,+Kota+Pangkal+Pinang,+Kepulauan+Bangka+Belitung" target="_blank" class="btn btn-outline" style="width:100%;padding:10px">Lihat di Google Maps</a>
+      </div>
+
+      <div class="contact-map" data-loc="muntok" style="display:none">
+        <h3>Yummaland Muntok – Bangka Barat</h3>
+        <div class="map-frame">
+          <iframe src="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351&output=embed"
+            width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p class="alamat">W5J7+P5H, Jl. Jenderal Sudirman, Tanjung, Kec. Muntok, Kabupaten Bangka Barat, Kepulauan Bangka Belitung 33351</p>
+        <a href="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351" target="_blank" class="btn btn-outline" style="width:100%;padding:10px">Lihat di Google Maps</a>
+      </div>
+
+      <div class="contact-map" data-loc="sungailiat" style="display:none">
+        <h3>Yummaland Sungailiat – Bangka</h3>
+        <div class="map-frame">
+          <iframe src="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung&output=embed"
+            width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p class="alamat">44W8+R43, Jl. Cokro Aminoto, Sungailiat, Kabupaten Bangka, Kepulauan Bangka Belitung</p>
+        <a href="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung" target="_blank" class="btn btn-outline" style="width:100%;padding:10px">Lihat di Google Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="visit-banner">
+  <div class="visit-inner">
+    <div>
+      <div class="kicker">Siap untuk seru-seruan?</div>
+      <h3>Waktunya bikin momen seru di Yummaland</h3>
+      <p>Pilih paket, tentukan tanggal, lalu hubungi kami. Sampai jumpa di Yummaland!</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="#kontak"><i class="fa-solid fa-calendar-check"></i> Reservasi</a>
+      <a class="btn btn-outline" href="https://share.google/4NW23xp7UHeGx6szC" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-map-location-dot"></i> Maps</a>
+    </div>
+  </div>
 </div>
 
-<!-- 🌸 LOKASI 2 -->
-<div class="contact-map">
-  <h3>📍 Yummaland Muntok – Bangka Barat</h3>
-  <div class="map-frame">
-    <iframe 
-      src="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351&output=embed"
-      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
-  <p class="alamat">
-    Yummaland Muntok<br>
-    W5J7+P5H, Jl. Jenderal Sudirman, Tanjung,<br>
-    Kec. Muntok, Kabupaten Bangka Barat, Kepulauan Bangka Belitung 33351
-  </p>
-  <a href="https://www.google.com/maps?q=W5J7+P5H,+Jl.+Jenderal+Sudirman,+Tanjung,+Kec.+Muntok,+Kabupaten+Bangka+Barat,+Kepulauan+Bangka+Belitung+33351" 
-     target="_blank" class="btn-neo">Lihat di Google Maps</a>
-</div>
-
-<!-- 🌸 LOKASI 3 -->
-<div class="contact-map">
-  <h3>📍 Yummaland Sungailiat – Bangka</h3>
-  <div class="map-frame">
-    <iframe 
-      src="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung&output=embed"
-      width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
-  <p class="alamat">
-    Yummaland Sungailiat<br>
-    44W8+R43, Jl. Cokro Aminoto, Sungailiat,<br>
-    Kabupaten Bangka, Kepulauan Bangka Belitung
-  </p>
-  <a href="https://www.google.com/maps?q=44W8+R43,+Jl.+Cokro+Aminoto,+Sungailiat,+Kabupaten+Bangka,+Kepulauan+Bangka+Belitung" 
-     target="_blank" class="btn-neo">Lihat di Google Maps</a>
-</div>
-
-
-  <footer>
-     <div class="meta">
-    <div class="muted">© <span id="year"></span> Yummaland </div>
+<footer>
+  <div class="container">
+    <div class="muted" style="font-size:13px">© <span id="year"></span> Yummaland</div>
     <div class="social">
-      <a href="https://instagram.com/yummaland" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.instagram.com/yumma_land/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
       <a href="https://facebook.com/yummaland" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
       <a href="https://tiktok.com/@yummaland" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
   </div>
-  </footer>
+</footer>
 
+<div id="lightbox">
+  <img id="lightboxImg" src="" alt="">
 </div>
 
-<!-- lightbox -->
-<div id="lightbox" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s">
-  <img id="lightboxImg" src="" alt="" style="max-width:92%;max-height:86%;border-radius:10px;box-shadow:0 30px 100px rgba(0,0,0,0.8)">
-</div>
+<a href="#kontak" class="floating-book"><i class="fa-solid fa-ticket"></i><span>Booking</span></a>
+<div class="toast" id="toast"></div>
 
 <script>
-/* -------------------------
-   Helpers & small utilities
-   ------------------------- */
 const $ = (s,root=document) => root.querySelector(s);
 const $$ = (s,root=document) => Array.from(root.querySelectorAll(s));
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* -------------------------
-   Menu toggle (mobile)
-   ------------------------- */
+/* mobile menu */
 const menuBtn = $('#menuBtn'), nav = $('#nav');
 menuBtn?.addEventListener('click', ()=> nav.classList.toggle('active'));
 
-/* -------------------------
-   Reveal on scroll
-   ------------------------- */
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting) e.target.classList.add('visible');
+/* scroll progress bar */
+(function(){
+  const bar = $('#scrollProgress');
+  if(!bar) return;
+  window.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const scrolled = h.scrollTop;
+    const height = h.scrollHeight - h.clientHeight;
+    bar.style.width = height > 0 ? (scrolled / height * 100) + '%' : '0%';
   });
-},{threshold: 0.12});
-$$('.reveal').forEach(el => observer.observe(el));
+})();
 
-/* -------------------------
-   Buttons ripple micro-interaction
-   ------------------------- */
-function rippleEffect(e){
-  const btn = e.currentTarget;
-  let ripple = btn.querySelector('.ripple');
-  if(!ripple){
-    ripple = document.createElement('span');
-    ripple.className = 'ripple';
-    ripple.style.position='absolute';
-    ripple.style.borderRadius='999px';
-    ripple.style.pointerEvents='none';
-    ripple.style.background = 'rgba(255,255,255,0.06)';
-    btn.appendChild(ripple);
+/* open/closed status badge — buka setiap hari 09.00–20.00 */
+(function(){
+  const badge = $('#statusBadge'), text = $('#statusText');
+  if(!badge) return;
+  const now = new Date();
+  const hour = now.getHours() + now.getMinutes() / 60;
+  const isOpen = hour >= 9 && hour < 20;
+  text.textContent = isOpen ? 'Buka sekarang · tutup 20.00' : 'Tutup · buka jam 09.00';
+  badge.classList.toggle('closed', !isOpen);
+})();
+
+/* animated hero counters */
+(function(){
+  const statsEl = $('.hero-stats');
+  if(!statsEl) return;
+  function animateCount(el){
+    const target = parseInt(el.dataset.count, 10);
+    const suffix = el.dataset.suffix || '';
+    const start = performance.now();
+    const duration = 900;
+    function tick(now){
+      const p = Math.min((now - start) / duration, 1);
+      el.textContent = Math.round(target * p) + suffix;
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
-  ripple.style.width = ripple.style.height = Math.max(btn.offsetWidth, btn.offsetHeight)*2 + 'px';
-  const rect = btn.getBoundingClientRect();
-  ripple.style.left = (e.clientX - rect.left) + 'px';
-  ripple.style.top = (e.clientY - rect.top) + 'px';
-  ripple.style.transform = 'translate(-50%,-50%) scale(0)';
-  ripple.style.opacity = '0.9';
-  ripple.animate([
-    {transform:'translate(-50%,-50%) scale(0)', opacity:0.9},
-    {transform:'translate(-50%,-50%) scale(1)', opacity:0}
-  ],{duration:520,easing:'cubic-bezier(.2,.9,.2,1)'});
-}
-$$('.btn-neo').forEach(b=>{
-  b.addEventListener('pointerdown', rippleEffect);
+  const statsObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        $$('.hero-stats [data-count]').forEach(animateCount);
+        statsObserver.disconnect();
+      }
+    });
+  },{threshold:0.4});
+  statsObserver.observe(statsEl);
+})();
+
+/* location tabs */
+$$('.loc-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    $$('.loc-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const loc = tab.dataset.loc;
+    $$('#mapGrid .contact-map').forEach(card=>{
+      card.style.display = (card.dataset.loc === loc) ? 'block' : 'none';
+    });
+  });
 });
 
-document.getElementById("waForm").addEventListener("submit", function(e) {
+/* reveal on scroll */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.12});
+$$('.reveal').forEach(el => observer.observe(el));
+
+/* WhatsApp booking form */
+document.getElementById('waForm').addEventListener('submit', function(e){
   e.preventDefault();
-
-  const name = document.getElementById("custName").value.trim();
-  const date = document.getElementById("playDate").value.trim();
-  const note = document.getElementById("note").value.trim();
-
-  // Nomor WA tujuan
-  const phone = "6289526740388";
-
-  // Format pesan
+  const name = document.getElementById('custName').value.trim();
+  const date = document.getElementById('playDate').value.trim();
+  const note = document.getElementById('note').value.trim();
+  const phone = '6289526740388';
   const message =
     `Halo, saya *${name}* ingin bermain di tanggal *${date}*.%0A%0A` +
     `Catatan:%0A${note || '-'}`;
-
-  // Buat URL WhatsApp
-  const waURL = `https://wa.me/${phone}?text=${message}`;
-
-  // Buka di tab baru
-  window.open(waURL, "_blank");
+  window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  $('#formSuccess')?.classList.add('show');
 });
 
-
-
-/* -------------------------
-   Gallery lightbox
-   ------------------------- */
+/* gallery lightbox */
 $('#gallery')?.addEventListener('click', (ev)=>{
   const img = ev.target.closest('img');
   if(!img) return;
   $('#lightboxImg').src = img.src;
   const lb = $('#lightbox');
-  lb.style.pointerEvents='auto';
-  lb.style.opacity=1;
+  lb.style.pointerEvents = 'auto';
+  lb.style.opacity = 1;
 });
-$('#lightbox')?.addEventListener('click', ()=>{ $('#lightbox').style.opacity=0; setTimeout(()=>$('#lightbox').style.pointerEvents='none',220); });
+$('#lightbox')?.addEventListener('click', ()=>{
+  $('#lightbox').style.opacity = 0;
+  setTimeout(()=> $('#lightbox').style.pointerEvents = 'none', 200);
+});
 
-/* -------------------------
-   Canvas: aurora + particles (futuristic)
-   - lightweight, no libs
-   ------------------------- */
+/* age recommendation */
+const ageMessages = {
+  '1-3':'Rekomendasi: area soft play, aktivitas sensorik, dan permainan ringan bersama orang tua.',
+  '4-6':'Rekomendasi: creative zone, permainan aktif, dan aktivitas edukatif interaktif.',
+  '7-9':'Rekomendasi: active play, tantangan motorik, dan permainan eksplorasi yang lebih seru.',
+  '10-12':'Rekomendasi: aktivitas tantangan, permainan kompetitif ringan, dan eksplorasi yang lebih mandiri.'
+};
+$$('.age-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    $$('.age-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    $('#ageResult').textContent = ageMessages[btn.dataset.age];
+  });
+});
+
+/* faq accordion */
+$$('.faq-q').forEach(q=>{
+  q.addEventListener('click', ()=>{
+    const item = q.closest('.faq-item');
+    $$('.faq-item').forEach(i=>{ if(i!==item) i.classList.remove('open'); });
+    item.classList.toggle('open');
+  });
+});
+
+/* toast on booking intent */
+function showToast(text){
+  const toast = $('#toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+}
+$$('a[href="#kontak"]').forEach(a=>{
+  a.addEventListener('click', ()=> showToast('Yuk, siapkan tanggal bermainmu ✨'));
+});
+
+/* single deliberate motion moment: hero visual parallax */
 (function(){
-  const canvas = document.getElementById('stage');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w=0,h=0,device=window.devicePixelRatio || 1;
-  const particles = [];
-  const lines = [];
-
-  function resize(){
-    device = window.devicePixelRatio || 1;
-    w = canvas.width = Math.floor(window.innerWidth * device);
-    h = canvas.height = Math.floor(window.innerHeight * device);
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-    ctx.setTransform(device,0,0,device,0,0);
-  }
-  window.addEventListener('resize', () => { resize(); initScene(); });
-
-  // particle constructor
-  function P(x,y,r,dx,dy,life, hue){
-    this.x=x;this.y=y;this.r=r;this.dx=dx;this.dy=dy;this.life=life;this.max=life;this.h=hue;
-  }
-  P.prototype.step = function(dt){
-    this.x += this.dx*dt;
-    this.y += this.dy*dt;
-    this.life -= dt*0.6;
-    if(this.life <= 0) return false;
-    return true;
-  }
-
-  // init scene
-  function initScene(){
-    particles.length = 0;
-    lines.length = 0;
-    // create soft aurora blobs
-    for(let i=0;i<18;i++){
-      const px = Math.random()*w;
-      const py = h*0.1 + Math.random()*h*0.6;
-      const r = 160 + Math.random()*320;
-      const hue = 300 + Math.random()*60; // pink-violet
-      lines.push({x:px,y:py,r:r,h:hue, alpha:0.08 + Math.random()*0.12});
-    }
-  }
-
-  let last = performance.now();
-
-  function step(now){
-    const dt = Math.min(1/30, (now - last)/1000);
-    last = now;
-    // fade canvas gently
-    ctx.clearRect(0,0,w,h);
-    // draw aurora blobs
-    lines.forEach(L=>{
-      const grd = ctx.createRadialGradient(L.x, L.y, L.r*0.02, L.x, L.y, L.r);
-      grd.addColorStop(0, `hsla(${L.h},100%,78%,${L.alpha})`);
-      grd.addColorStop(0.35, `hsla(${L.h+20},95%,58%,${L.alpha*0.6})`);
-      grd.addColorStop(1, `rgba(5,2,10,0)`);
-      ctx.globalCompositeOperation = 'screen';
-      ctx.fillStyle = grd;
-      ctx.beginPath();
-      ctx.ellipse(L.x, L.y, L.r, L.r*0.6, 0, 0, Math.PI*2);
-      ctx.fill();
-    });
-
-    // spawn particles
-    if(Math.random() < 0.9){
-      const x = Math.random()*w;
-      const y = h + 20;
-      const dx = (Math.random()-0.5) * 30;
-      const dy = -(40 + Math.random()*90);
-      const r = 1 + Math.random()*3;
-      const life = 3 + Math.random()*4;
-      particles.push(new P(x,y,r,dx,dy,life, 320 + Math.random()*40));
-    }
-
-    // update & draw particles
-    ctx.globalCompositeOperation = 'lighter';
-    for(let i=particles.length-1;i>=0;i--){
-      const p = particles[i];
-      const alive = p.step(dt);
-      if(!alive){ particles.splice(i,1); continue; }
-      const t = p.life / p.max;
-      const op = Math.min(0.9, 0.25 + (1-t)*0.9);
-      ctx.fillStyle = `hsla(${p.h},95%,70%,${op})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * (1+t), 0, Math.PI*2);
-      ctx.fill();
-    }
-
-    // subtle moving grid lines (hologram)
-    ctx.globalCompositeOperation = 'overlay';
-    ctx.strokeStyle = 'rgba(255,255,255,0.02)';
-    ctx.lineWidth = 1;
-    const gap = 140;
-    const offset = (now/2000)%gap;
-    for(let gx = -gap; gx < w + gap; gx += gap){
-      ctx.beginPath();
-      ctx.moveTo(gx + offset, 0);
-      ctx.lineTo(gx + offset - 60, h);
-      ctx.stroke();
-    }
-
-    requestAnimationFrame(step);
-  }
-
-  resize();
-  initScene();
-  requestAnimationFrame(step);
-})();
-
-/* -------------------------
-   small parallax hero interaction
-   ------------------------- */
-(function(){
-  const hero = document.querySelector('.hero');
-  if(!hero) return;
+  const hv = $('#heroVisual');
+  if(!hv || !window.matchMedia('(pointer:fine)').matches) return;
   window.addEventListener('mousemove', (e)=>{
     const w = window.innerWidth, h = window.innerHeight;
     const nx = (e.clientX - w/2) / (w/2);
     const ny = (e.clientY - h/2) / (h/2);
-    hero.style.transform = `translate3d(${nx*6}px, ${ny*6}px, 0)`;
-  });
-  window.addEventListener('scroll', ()=>{
-    hero.style.transform = `translateY(${window.scrollY * 0.03}px)`;
+    hv.style.transform = `translate3d(${nx*8}px, ${ny*8}px, 0)`;
   });
 })();
-
-/* -------------------------
-   subtle header hide on scroll down
-   ------------------------- */
-(function(){
-  let last = 0;
-  const topbar = $('#topbar');
-  window.addEventListener('scroll', ()=>{
-    const s = window.scrollY;
-    if(s > last && s > 160) topbar.style.transform = 'translateY(-18px) scale(.995)';
-    else topbar.style.transform = 'translateY(0)';
-    last = s;
-  });
-})();
-
 </script>
+
 </body>
 </html>
